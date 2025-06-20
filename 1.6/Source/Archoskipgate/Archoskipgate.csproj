@@ -36,6 +36,17 @@
       <HintPath>../../../../../RimWorldWin64_Data/Managed/UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+      <Reference Include="UnityEngine.IMGUIModule">
+          <HintPath>..\..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+          <Private>False</Private>
+      </Reference>
+      <Reference Include="KCSG">
+          <HintPath Condition="Exists('../../../../VanillaExpandedFramework/1.6/Assemblies/KCSG.dll')">../../../../VanillaExpandedFramework/1.6/Assemblies/KCSG.dll</HintPath>
+          <HintPath Condition="Exists('../../../../2023507013/1.6/Assemblies/KCSG.dll')">../../../../2023507013/1.6/Assemblies/KCSG.dll</HintPath>
+          <HintPath Condition="Exists('../../../../../../../workshop/content/294100/2023507013/1.6/Assemblies/KCSG.dll')">../../../../../../../workshop/content/294100/2023507013/1.6/Assemblies/KCSG.dll</HintPath>
+          <HintPath Condition="Exists('../../../../../../../../workshop/content/294100/2023507013/1.6/Assemblies/KCSG.dll')">../../../../../../../../workshop/content/294100/2023507013/1.6/Assemblies/KCSG.dll</HintPath>
+          <Private>False</Private>
+      </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Condition="Exists('../../../../../Data')" Include="../../../../../Data/**/*">
