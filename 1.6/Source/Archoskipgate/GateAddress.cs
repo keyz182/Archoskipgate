@@ -5,6 +5,7 @@ using KCSG;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
+using StructureLayoutDef = KCSG.StructureLayoutDef;
 
 namespace Archoskipgate;
 
@@ -20,6 +21,7 @@ public class GateAddress: IExposable, ILoadReferenceable
     public string address;
     public BiomeDef biome;
     public float temperature;
+    public int layer;
     public int tile;
     public string name;
     public string description;
@@ -40,11 +42,11 @@ public class GateAddress: IExposable, ILoadReferenceable
 
     public static GateAddress RandomGateAddress()
     {
-        GateAddress address = new();
-        address.address = RandomGateAddressString();
-        address.biome = GetBiome();
-        Tile biomeTile = GetWorldTileMatching(address.biome);
-        address.tile = Find.World.grid.tiles.IndexOf(biomeTile);
+        GateAddress address = new() { address = RandomGateAddressString(), biome = GetBiome() };
+        PlanetLayer layer = GetLayer();
+        Tile biomeTile = GetWorldTileMatching(address.biome, layer);
+        address.layer = layer.LayerID;
+        address.tile = biomeTile.Layer.Tiles.IndexOf(biomeTile);
         address.temperature = biomeTile.temperature;
         return address;
     }
@@ -59,23 +61,28 @@ public class GateAddress: IExposable, ILoadReferenceable
         return DefDatabase<BiomeDef>.AllDefs.Where(b => b.generatesNaturally).RandomElement();
     }
 
-    public static Tile GetWorldTileMatching(float temperature)
+    public static PlanetLayer GetLayer()
+    {
+        return Find.World.grid.PlanetLayers.Values.RandomElement();
+    }
+
+    public static Tile GetWorldTileMatching(float temperature, PlanetLayer layer)
     {
         // expand range up to +/- 20.5 as needed to find the closes match, otherwise fall back to random
         for (int i = 0; i < 20; i++)
         {
             float tempRange = temperature + (0.5f + i);
 
-            Tile tile =  Find.World.grid.tiles.Where(t => !t.WaterCovered && t.temperature > (temperature - tempRange) && t.temperature < (temperature + tempRange)).RandomElement();
+            Tile tile =  layer.Tiles.Where(t => !t.WaterCovered && t.temperature > (temperature - tempRange) && t.temperature < (temperature + tempRange)).RandomElement();
             if (tile != null) return tile;
         }
-        return Find.World.grid.tiles.Where(t => !t.WaterCovered).RandomElement();
+        return layer.Tiles.Where(t => !t.WaterCovered).RandomElement();
     }
 
-    public static Tile GetWorldTileMatching(BiomeDef biome)
+    public static Tile GetWorldTileMatching(BiomeDef biome, PlanetLayer layer)
     {
-        Tile tile =  Find.World.grid.tiles.Where(t => !t.WaterCovered && t.biome == biome).RandomElement();
-        return tile ?? Find.World.grid.tiles.Where(t => !t.WaterCovered).RandomElement();
+        Tile tile =  layer.Tiles.Where(t => !t.WaterCovered && t.PrimaryBiome == biome).RandomElement();
+        return tile ?? layer.Tiles.Where(t => !t.WaterCovered).RandomElement();
     }
 
     public string Description
@@ -87,6 +94,8 @@ public class GateAddress: IExposable, ILoadReferenceable
     }
 
     public string Name => !string.IsNullOrEmpty(name) ? name : address;
+
+    public PlanetLayer Layer => Find.World.grid.PlanetLayers.Values.First(p => p.LayerID == layer);
 
     public void ExposeData()
     {
@@ -115,7 +124,7 @@ public class GateAddress: IExposable, ILoadReferenceable
 
         PocketMapParent mapParent = WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.PocketMap) as PocketMapParent;
         mapParent!.sourceMap = entryGate.Map;
-        planetMap = MapGenerator.GenerateMap(new IntVec3(GDFPMod.settings.planetWidth, 1, GDFPMod.settings.planetHeight), mapParent, ArchoskipgateDefOf.GDFP_Planet, gtwp, isPocketMap: true, extraInitBeforeContentGen: (map) =>
+        planetMap = MapGenerator.GenerateMap(new IntVec3(ArchoskipgateMod.settings.planetWidth, 1, ArchoskipgateMod.settings.planetHeight), mapParent, ArchoskipgateDefOf.GDFP_Planet, gtwp, isPocketMap: true, extraInitBeforeContentGen: (map) =>
         {
             if (address.faction != null && Find.FactionManager.FirstFactionOfDef(address.faction) != null)
             {
@@ -124,7 +133,7 @@ public class GateAddress: IExposable, ILoadReferenceable
             {
                 SelectedFaction = Find.FactionManager.RandomNonHostileFaction();
             }
-            map.TileInfo.biome = address.biome;
+            map.TileInfo.PrimaryBiome = address.biome;
             map.TileInfo.temperature = address.temperature;
         });
         Find.World.pocketMaps.Add(mapParent);
@@ -159,7 +168,7 @@ public class GateAddress: IExposable, ILoadReferenceable
             return;
         }
 
-        IntVec3 mapSize = new IntVec3(GDFPMod.settings.planetWidth, 1, GDFPMod.settings.planetHeight);
+        IntVec3 mapSize = new IntVec3(ArchoskipgateMod.settings.planetWidth, 1, ArchoskipgateMod.settings.planetHeight);
 
         StructureLayoutDef standalone = null;
         List<GenStepWithParams> gtwp = [];
@@ -220,11 +229,11 @@ public class GateAddress: IExposable, ILoadReferenceable
                     SelectedFaction = Find.FactionManager.RandomNonHostileFaction();
                 }
 
-                if (sde.biome != null) map.TileInfo.biome = sde.biome;
+                if (sde.biome != null) map.TileInfo.PrimaryBiome = sde.biome;
                 return;
             }
 
-            map.TileInfo.biome = address.biome;
+            map.TileInfo.PrimaryBiome = address.biome;
             map.TileInfo.temperature = address.temperature;
         });
         Find.World.pocketMaps.Add(mapParent);

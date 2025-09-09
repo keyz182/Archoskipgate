@@ -5,6 +5,7 @@ using KCSG;
 using RimWorld;
 using Verse;
 using Verse.Sound;
+using StructureLayoutDef = KCSG.StructureLayoutDef;
 
 namespace Archoskipgate;
 

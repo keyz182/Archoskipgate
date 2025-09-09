@@ -8,6 +8,7 @@ using RimWorld;
 using RimWorld.BaseGen;
 using Verse;
 using Verse.AI.Group;
+using StructureLayoutDef = KCSG.StructureLayoutDef;
 
 namespace Archoskipgate;
 
@@ -81,7 +82,7 @@ public class GenStep_GDCustomGen : GenStep_CustomStructureGen
                     }
                     Faction faction = GateAddress.SelectedFaction ?? (mde.anyHostile ? Faction.OfAncientsHostile : Faction.OfAncients);
 
-                    LordJob_DefendBase lordJobDefendBase = new(faction, mde.lordCenter.IsValid ? mde.lordCenter : map.Center, true);
+                    LordJob_DefendBase lordJobDefendBase = new(faction, mde.lordCenter.IsValid ? mde.lordCenter : map.Center, 600,true);
                     Lord lord = LordMaker.MakeNewLord(faction, lordJobDefendBase, map);
 
                     foreach (PawnRepr mdeSpawnedPawn in mde.spawnedPawns)

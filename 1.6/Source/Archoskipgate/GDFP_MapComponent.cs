@@ -122,6 +122,7 @@ public class GDFP_MapComponent(Map map) : MapComponent(map)
         false,
         false,
         false,
+        false,
         0,
         false,
         actionType = DebugActionType.Action,

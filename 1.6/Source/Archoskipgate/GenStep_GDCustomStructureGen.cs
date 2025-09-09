@@ -7,6 +7,7 @@ using KCSG;
 using RimWorld;
 using RimWorld.BaseGen;
 using Verse;
+using StructureLayoutDef = KCSG.StructureLayoutDef;
 
 namespace Archoskipgate;
 
