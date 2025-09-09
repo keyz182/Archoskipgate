@@ -34,7 +34,7 @@ public static class GenStep_ScatterAncientTurret
 
                 // Call our custom method instead
                 yield return new CodeInstruction(OpCodes.Call,
-                    AccessTools.Method(typeof(GenStep_Caves_Generate_Patch), nameof(GenStep_Caves_Generate_Patch.IsPocketMapWithCaves)));
+                    AccessTools.Method(typeof(Utils), nameof(Utils.IsPocketMapWithCaves)));
             }
             else
             {

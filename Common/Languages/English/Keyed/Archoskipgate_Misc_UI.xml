@@ -2,4 +2,7 @@
 <LanguageData>
     <Archoskipgate_SettingsCategory>Archoskipgate</Archoskipgate_SettingsCategory>
     <Archoskipgate_Settings_SettingName>Some Setting</Archoskipgate_Settings_SettingName>
+    <ASK_Enter>Enter the Archoskipgate</ASK_Enter>
+    <ASK_Settings_DefaultGatePlanetWidth>Default gate planet width: {0} tiles</ASK_Settings_DefaultGatePlanetWidth>
+    <ASK_Settings_DefaultGatePlanetHeight>Default gate planet height: {0} tiles</ASK_Settings_DefaultGatePlanetHeight>
 </LanguageData>

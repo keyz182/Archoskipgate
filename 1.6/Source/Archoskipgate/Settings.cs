@@ -5,22 +5,50 @@ namespace Archoskipgate;
 
 public class Settings : ModSettings
 {
-    //Use Mod.settings.setting to refer to this setting.
-    public bool setting = true;
+    public int planetWidth = 275;
+    public int planetHeight = 275;
 
     public void DoWindowContents(Rect wrect)
     {
-        var options = new Listing_Standard();
+        Listing_Standard options = new();
         options.Begin(wrect);
-        
-        options.CheckboxLabeled("Archoskipgate_Settings_SettingName".Translate(), ref setting);
+
+        options.Label("ASK_Settings_DefaultGatePlanetWidth".Translate(planetWidth));
+        options.IntAdjuster(ref planetWidth, 10, 275);
+        options.Gap();
+
+        options.Label("ASK_Settings_DefaultGatePlanetHeight".Translate(planetHeight));
+        options.IntAdjuster(ref planetHeight, 10, 275);
         options.Gap();
 
         options.End();
     }
-    
+
     public override void ExposeData()
     {
-        Scribe_Values.Look(ref setting, "setting", true);
+        if (Scribe.mode == LoadSaveMode.Saving)
+        {
+            if(planetHeight < 275)
+            {
+                planetHeight = 275;
+            }
+            if(planetWidth < 275)
+            {
+                planetWidth = 275;
+            }
+        }
+        Scribe_Values.Look(ref planetWidth, "planetWidth", 275);
+        Scribe_Values.Look(ref planetHeight, "planetHeight", 275);
+        if (Scribe.mode == LoadSaveMode.PostLoadInit)
+        {
+            if(planetHeight < 275)
+            {
+                planetHeight = 275;
+            }
+            if(planetWidth < 275)
+            {
+                planetWidth = 275;
+            }
+        }
     }
 }
